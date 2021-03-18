@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
+import {Link} from 'react-router-dom';
 import Button from '../components/global/Button';
 import TextInput from '../components/global/TextInput';
 import LoginImage from '../assets/images/LoginImage';
-import {Link} from 'react-router-dom';
+// import signIn from '../services/authService';
 
 import '../stylesheets/loginView.scss';
 
@@ -11,6 +12,17 @@ export default function LoginView() {
   const [password, setPassword] = useState('');
   const login = function () {
     console.log(email, password);
+  };
+
+  // for testing without firebase authentication
+  const signIn = function (emailTest, passwordTest) {
+    // emailTest === 'email' && passwordTest === 'password'
+    //   ? {return: true}
+    //   : null;
+    if (emailTest === 'email' && passwordTest === 'password') {
+      return true;
+    }
+    return false;
   };
 
   return (
@@ -27,10 +39,19 @@ export default function LoginView() {
             type='password'
           />
         </div>
-        <div onClick={login}>
-          <Button icon={'rightArrow'} text={'Login'} />
+        <div onClick={login} onKeyDown={login} role='button' tabIndex={0}>
+          {signIn(email, password) ? (
+            <Link to='/home'>
+              <Button icon='rightArrow' text='Login' />
+            </Link>
+          ) : (
+            <Button icon='rightArrow' text='Login' />
+          )}
+          {/* <Link to='/home'>
+            <Button icon='rightArrow' text='Login' />
+          </Link> */}
         </div>
-        Don't have an account?&nbsp;
+        Don&#39;t have an account?&nbsp;
         <Link to='/signup' className='login_signup_link'>
           Sign Up here
         </Link>
