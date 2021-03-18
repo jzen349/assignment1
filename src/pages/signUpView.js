@@ -1,31 +1,69 @@
-import React, {useState} from 'react';
-import {Link} from 'react-router-dom';
+import React, { useState } from "react";
+import { Link, useHistory } from "react-router-dom";
+
 import TextInput from '../components/global/TextInput';
 import Button from '../components/global/Button';
 import SignUpBGImage from '../assets/images/SignupImage';
 
-export default function SignUpView() {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [firstNameInfoText, setFirstNameInfoText] = useState('');
-  const [lastNameInfoText, setLastNameInfoText] = useState('');
-  const [emailInfoText, setEmailInfoText] = useState('');
-  const [passwordInfoText, setPasswordInfoText] = useState('');
+export default function SignUpView( ) {
+    const history = useHistory();
+    
+    // Input fields
+    const [ firstName, setFirstName ] = useState("");
+    const [ lastName, setLastName ] = useState("");
+    const [ email, setEmail ] = useState("");
+    const [ password, setPassword ] = useState("");
 
-  const signUp = () => {
-    // For debugging
-    console.log(
-      `First name: ${firstName} \nLast name: ${lastName} \nEmail: ${email} \nPassword: ${password}`
-    );
+    // Feedback strings to provide user with instructions
+    // E.g. if they leave out an input, or enter something incorrectly
+    const [ firstNameInfoText, setFirstNameInfoText ] = useState("");
+    const [ lastNameInfoText, setLastNameInfoText ] = useState("");
+    const [ emailInfoText, setEmailInfoText ] = useState("");
+    const [ passwordInfoText, setPasswordInfoText ] = useState("");
 
-    // Check inputs
-    if (!firstName) {
-      setFirstNameInfoText('Please enter your first name');
-    }
-    if (!lastName) {
-      setLastNameInfoText('Please enter your last name');
+    const signUp = async () => {
+        // Remove leading + trailing whitespace
+        const processedFirstName = firstName.trim();
+        const processedLastName = lastName.trim();
+        const processedEmail = email.trim();
+        const processedPassword = password.trim();
+
+        // For debugging
+        // console.log(`First name: ${processedFirstName} \nLast name: ${processedLastName} \nEmail: ${processedEmail} \nPassword: ${processedPassword}`);
+        
+        let validSignup = true;
+        // Check if all inputs were provided
+        if (!processedFirstName) {
+            setFirstNameInfoText("Please enter your first name");
+            validSignup = false;
+        }
+        if (!processedLastName) {
+            setLastNameInfoText("Please enter your last name");
+            validSignup = false;
+        }
+        if (!processedEmail) {
+            setEmailInfoText("Please enter an email");
+            validSignup = false;
+        }
+        if (!processedPassword) {
+            setPasswordInfoText("Please enter a password");
+            validSignup = false;
+        }
+
+        if (validSignup) {
+            // All signup information was provided, redirect to login
+            // TODO: Give signup information to firebase signup method
+            // If successful, can redirect user back to login
+            history.push("/");
+        } else {
+            // Some signup information wasn't provided
+            // Don't want to reset inputs, as user might have made a typo
+            // Instead, set inputs to the correctly processed strings
+            setFirstName(processedFirstName);
+            setLastName(processedLastName);
+            setEmail(processedEmail);
+            setPassword(processedPassword);
+        }
     }
     if (!email) {
       setEmailInfoText('Please enter an email');
@@ -41,47 +79,47 @@ export default function SignUpView() {
     setPassword('');
   };
 
-  return (
-    <div className='sign-up__root'>
-      <div className='sign-up__container'>
-        <h1>Sign Up</h1>
-        <TextInput
-          label='First Name:'
-          textValue={firstName}
-          onChangeHandler={setFirstName}
-          placeholderValue={firstNameInfoText}
-        />
-        <TextInput
-          label='Last Name:'
-          textValue={lastName}
-          onChangeHandler={setLastName}
-          placeholderValue={lastNameInfoText}
-        />
-        <TextInput
-          label='Email:'
-          textValue={email}
-          onChangeHandler={setEmail}
-          placeholderValue={emailInfoText}
-        />
-        <TextInput
-          label='Password:'
-          textValue={password}
-          onChangeHandler={setPassword}
-          placeholderValue={passwordInfoText}
-        />
-        <div onClick={signUp} onKeyDown={signUp} role='button' tabIndex={0}>
-          <Button icon='rightArrow' text='Sign Up' />
-        </div>
-        <div className='sign-up__bottom-text'>
-          Already have an account?
-          <Link to='/' className='sign-up__bottom-text__link'>
-            Log in here
-          </Link>
-        </div>
-      </div>
-      <div className='sign-up__bg'>
-        <SignUpBGImage />
-      </div>
+    return (
+        <div className="sign-up__root">
+            <div className="sign-up__container">
+                <h1>Sign Up</h1>
+                <TextInput 
+                  label="First Name:" 
+                  textValue={firstName} 
+                  onChangeHandler={setFirstName} 
+                  placeholderValue={firstNameInfoText}
+                />
+                <TextInput 
+                  label="Last Name:" 
+                  textValue={lastName} 
+                  onChangeHandler={setLastName}
+                  placeholderValue={lastNameInfoText} 
+                />
+                <TextInput 
+                  label="Email:"
+                  type="email"
+                  textValue={email} 
+                  onChangeHandler={setEmail}
+                  placeholderValue={emailInfoText}
+                />
+                <TextInput 
+                  label="Password:"
+                  type="password"
+                  textValue={password} 
+                  onChangeHandler={setPassword} 
+                  placeholderValue={passwordInfoText}
+                />
+                <Button icon="rightArrow" text="Sign Up" handleOnClick={signUp} />
+                <div className="sign-up__bottom-text">
+                    Already have an account?
+                    <Link to="/" className="sign-up__bottom-text__link">
+                        Log in here
+                    </Link>
+                </div>
+            </div>
+            <div className="sign-up__bg">
+                <SignUpBGImage />
+            </div>
     </div>
   );
 }

@@ -1,62 +1,71 @@
 import React, {useState} from 'react';
-import {Link} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
+
 import Button from '../components/global/Button';
 import TextInput from '../components/global/TextInput';
 import LoginImage from '../assets/images/LoginImage';
-// import signIn from '../services/authService';
-
-import '../stylesheets/loginView.scss';
 
 export default function LoginView() {
+  const history = useHistory();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const login = function () {
-    console.log(email, password);
-  };
+  const [emailInfoText, setEmailInfoText] = useState('');
+  const [passwordInfoText, setPasswordInfoText] = useState('');
 
-  // for testing without firebase authentication
-  const signIn = function (emailTest, passwordTest) {
-    // emailTest === 'email' && passwordTest === 'password'
-    //   ? {return: true}
-    //   : null;
-    if (emailTest === 'email' && passwordTest === 'password') {
-      return true;
+  const login = () => {
+    // Process inputs
+    const processedEmail = email.trim();
+    const processedPassword = password.trim();
+
+    // Check if inputs have been provided, notify user it not
+    let validLogin = true;
+    if (!processedEmail) {
+      setEmailInfoText('Please enter your email address');
+      validLogin = false;
     }
-    return false;
+    if (!processedPassword) {
+      setPasswordInfoText('Please enter your password');
+      validLogin = false;
+    }
+
+    // If user is authenticated, we can redirect to home
+    if (validLogin) {
+      // TODO: Call firebase login method with email and password
+      // If successful, can go to /home
+      history.push('/home');
+    }
   };
 
   return (
     <>
       <div className='login'>
-        <h1 className='welcome'>Welcome</h1>
-        <div className='email_container'>
-          <TextInput label='Email:' onChangeHandler={setEmail} type='email' />
+        <h1 className='login__welcome'>Welcome</h1>
+        <div className='email-container'>
+          <TextInput
+            label='Email:'
+            placeholderValue={emailInfoText}
+            onChangeHandler={setEmail}
+            type='email'
+          />
         </div>
-        <div className='password_container'>
+        <div className='password-container'>
           <TextInput
             label='Password:'
+            placeholderValue={passwordInfoText}
             onChangeHandler={setPassword}
             type='password'
           />
         </div>
-        <div onClick={login} onKeyDown={login} role='button' tabIndex={0}>
-          {signIn(email, password) ? (
-            <Link to='/home'>
-              <Button icon='rightArrow' text='Login' />
-            </Link>
-          ) : (
-            <Button icon='rightArrow' text='Login' />
-          )}
-          {/* <Link to='/home'>
-            <Button icon='rightArrow' text='Login' />
-          </Link> */}
+        <Button icon='rightArrow' text='Login' handleOnClick={login} />
+        <div className='login__bottom-text'>
+          <span>Don&apos;t have an account?</span>
+          <Link to='/signup' className='login__bottom-text__link'>
+            Sign Up here
+          </Link>
         </div>
-        Don&#39;t have an account?&nbsp;
-        <Link to='/signup' className='login_signup_link'>
-          Sign Up here
-        </Link>
       </div>
-      <div className='login_background'>
+      <div className='login__background'>
         <LoginImage />
       </div>
     </>
