@@ -5,6 +5,15 @@ import Button from '../components/global/Button';
 import TextInput from '../components/global/TextInput';
 import LoginImage from '../assets/images/LoginImage';
 
+// import signIn from '../services/authService';
+
+function signIn(emailTest, passwordTest) {
+  if (emailTest === 'email' && passwordTest === 'password') {
+    return true;
+  }
+  return false;
+}
+
 export default function LoginView() {
   const history = useHistory();
 
@@ -33,7 +42,9 @@ export default function LoginView() {
     if (validLogin) {
       // TODO: Call firebase login method with email and password
       // If successful, can go to /home
-      history.push('/home');
+      if (signIn(email, password)) {
+        history.push('/home');
+      }
     }
   };
 
